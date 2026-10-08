@@ -1,0 +1,9 @@
+{
+  "appId": "io.github.gnotesamsung7hue.babaylan",
+  "appName": "Babaylan",
+  "webDir": "www",
+  "android": {
+    "adjustMarginsForEdgeToEdge": "force",
+    "backgroundColor": "#17121c"
+  }
+}

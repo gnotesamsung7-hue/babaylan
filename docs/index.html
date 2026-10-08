@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17121c">
+<title>Babaylan: Rise of the Bakunawa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Noto+Sans+Tagalog&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e6dac4; --surface:#f2e8d5; --surface2:#ddcdb0; --ink:#2a1f2e; --dim:#6b5b5e;
+  --line:#c4b08c; --gold:#8f6a1c; --danger:#a3321f; --ok:#3a7334; --school:#8f6a1c;
+  --display:'IM Fell English SC','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --body:'Alegreya Sans','Segoe UI',Roboto,system-ui,sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#17121c; --surface:#221a29; --surface2:#2e2337; --ink:#eadfc8; --dim:#a4958a;
+    --line:#3e3048; --gold:#d3ab52; --danger:#e36a58; --ok:#86c46f; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17121c; --surface:#221a29; --surface2:#2e2337; --ink:#eadfc8; --dim:#a4958a;
+  --line:#3e3048; --gold:#d3ab52; --danger:#e36a58; --ok:#86c46f; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--school);outline-offset:2px}
+.app{max-width:540px;margin:0 auto;height:100%;display:flex;flex-direction:column}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;letter-spacing:.01em}
+
+/* header */
+.top{padding:10px 14px 8px;border-bottom:1px solid var(--line);background:var(--surface)}
+.top-row{display:flex;align-items:center;gap:10px}
+.crest{width:14px;height:14px;border-radius:50%;background:var(--school);box-shadow:0 0 0 3px color-mix(in srgb,var(--school) 30%,transparent);flex:none}
+.who{flex:1;min-width:0}
+.who h1{font-size:1.2rem;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who small{color:var(--dim);font-size:.82rem}
+.bank{text-align:right}
+.bank b{font-family:var(--display);font-size:1.5rem;line-height:1;color:var(--gold)}
+.bank small{display:block;color:var(--dim);font-size:.75rem}
+.iconbtn{background:none;border:1px solid var(--line);border-radius:8px;width:38px;height:38px;cursor:pointer;font-size:1.1rem;flex:none}
+.res{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin-top:8px}
+.res div{text-align:center;padding:4px 0;background:var(--surface2);font-size:.95rem;font-variant-numeric:tabular-nums}
+.res div:first-child{border-radius:6px 0 0 6px}.res div:last-child{border-radius:0 6px 6px 0}
+.res span{display:block;color:var(--dim);font-size:.7rem;line-height:1}
+
+main{flex:1;overflow-y:auto;padding:14px 14px 24px;-webkit-overflow-scrolling:touch}
+nav.tabs{display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--line);background:var(--surface)}
+nav.tabs button{background:none;border:0;padding:8px 0 9px;font-size:.74rem;color:var(--dim);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav.tabs button i{font-style:normal;font-size:1.15rem;line-height:1}
+nav.tabs button[aria-selected="true"]{color:var(--ink);box-shadow:inset 0 3px 0 var(--school)}
+
+/* sigil */
+.sigil-wrap{display:grid;place-items:center;margin:2px 0 6px}
+.sigil{width:min(68vw,250px);height:auto}
+.sigil .spin{transform-origin:120px 120px;animation:spin 140s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sigil .spin{animation:none}}
+.realm-line{text-align:center;color:var(--dim);font-size:.9rem;margin-bottom:14px}
+.realm-line b{color:var(--ink);font-weight:500}
+
+.sect{margin:18px 0 8px;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.sect h2{font-size:1.25rem}
+.sect small{color:var(--dim);font-size:.82rem}
+.note{color:var(--dim);font-size:.88rem;margin:4px 0 10px}
+
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{border:1px solid var(--line);background:none;border-radius:999px;padding:5px 13px;cursor:pointer;font-size:.9rem;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.act{border:1px solid var(--line);background:var(--surface);border-radius:4px 14px 4px 14px;padding:10px 12px;text-align:left;cursor:pointer}
+.act b{font-family:var(--display);font-weight:400;font-size:1.08rem;display:block}
+.act span{color:var(--dim);font-size:.82rem;display:block}
+.act:active{transform:translateY(1px)}
+
+.rows{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:10px 0 10px 12px;border-bottom:1px solid var(--line);position:relative}
+.row::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:2px;background:var(--tint,var(--line))}
+.row h3{font-size:1.05rem}
+.row .meta{color:var(--dim);font-size:.82rem}
+.row .meta b{color:var(--ink);font-weight:500}
+.row .side{display:flex;align-items:center;gap:6px;justify-self:end}
+.row.locked{opacity:.5}
+.count{font-family:var(--display);font-size:1.3rem;font-variant-numeric:tabular-nums}
+
+.stepper{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.stepper button{background:var(--surface2);border:0;width:32px;height:34px;cursor:pointer;font-size:1.05rem}
+.stepper input{width:52px;height:34px;border:0;background:var(--surface);text-align:center;font:inherit;color:var(--ink);font-variant-numeric:tabular-nums}
+
+.btn{border:0;border-radius:8px;padding:9px 14px;cursor:pointer;background:var(--ink);color:var(--bg);font-weight:500}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.btn.warn{background:var(--danger);color:#fff}
+.btn.sch{background:var(--school);color:#1a1310}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.small{padding:6px 11px;font-size:.88rem}
+.bar-foot{position:sticky;bottom:-24px;margin:12px -14px -24px;padding:12px 14px calc(12px + 0px);background:var(--surface);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bar-foot small{color:var(--dim)}
+
+.meter{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin:6px 0}
+.meter i{display:block;height:100%;background:var(--school)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 4px}
+.stats div{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px;text-align:center}
+.stats b{font-family:var(--display);font-size:1.3rem;font-weight:400;display:block;font-variant-numeric:tabular-nums}
+.stats span{color:var(--dim);font-size:.75rem}
+
+.tag{display:inline-block;font-size:.72rem;border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:2px;background:var(--surface2);color:var(--dim)}
+.tag.hot{background:var(--danger);color:#fff}
+.tag.ally{background:var(--ok);color:#fff}
+
+.ritual{border:1px solid var(--school);border-radius:14px 4px 14px 4px;padding:12px;margin-top:8px;background:color-mix(in srgb,var(--school) 8%,var(--surface))}
+.ritual h3{font-size:1.2rem}
+
+.log{list-style:none;margin:0;padding:0}
+.log li{padding:8px 0 8px 12px;border-bottom:1px solid var(--line);font-size:.92rem;position:relative}
+.log li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--line)}
+.log li.war::before{background:var(--danger)}.log li.magic::before{background:#7f6bd1}.log li.omen::before{background:var(--gold)}.log li.you::before{background:var(--school)}.log li.fall::before{background:var(--ink)}
+.log time{color:var(--dim);font-size:.75rem;margin-right:6px;font-variant-numeric:tabular-nums}
+
+/* modal & toast */
+.scrim{position:fixed;inset:0;background:rgba(10,6,12,.6);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:0 0 env(safe-area-inset-bottom,0px)}
+.sheet{background:var(--surface);width:100%;max-width:540px;border-radius:16px 16px 0 0;padding:18px 16px 16px;max-height:85vh;overflow-y:auto;border-top:3px solid var(--school)}
+.sheet h2{font-size:1.4rem;margin-bottom:6px}
+.sheet p{margin:6px 0}
+.sheet .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;top:calc(118px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:8px;z-index:30;font-size:.92rem;max-width:90vw;text-align:center}
+.report{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.report div{background:var(--surface2);border-radius:6px;padding:8px}
+.report span{color:var(--dim);font-size:.78rem;display:block}
+
+/* setup */
+.setup{padding:22px 16px 30px;overflow-y:auto;height:100%}
+.title{text-align:center;margin:8px 0 18px}
+.title h1{font-size:clamp(2.6rem,13vw,3.6rem);line-height:.95}
+.title p{color:var(--dim);margin:8px auto 0;max-width:34ch}
+.field{margin:16px 0}
+.field label,.field .lbl{display:block;font-family:var(--display);font-size:1.1rem;margin-bottom:6px}
+.field input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit}
+.schools{display:grid;gap:6px}
+.sch-opt{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--surface);padding:10px 12px;border-radius:8px;cursor:pointer}
+.sch-opt i{grid-row:span 2;width:30px;height:30px;border-radius:50%;background:var(--c);opacity:.35}
+.sch-opt b{font-family:var(--display);font-weight:400;font-size:1.1rem}
+.sch-opt span{color:var(--dim);font-size:.82rem}
+.sch-opt[aria-pressed="true"]{border-color:var(--c);box-shadow:inset 4px 0 0 var(--c)}
+.sch-opt[aria-pressed="true"] i{opacity:1}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{flex:1;background:var(--surface);border:0;padding:9px 4px;cursor:pointer;font-size:.92rem}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg-note{color:var(--dim);font-size:.82rem;margin-top:5px}
+.baybayin{font-family:'Noto Sans Tagalog',sans-serif;font-size:1.7rem;color:var(--school);letter-spacing:.2em;margin-top:6px;line-height:1.2}
+.lore{font-style:italic;color:var(--dim);font-size:.8rem}
+.endcard{text-align:center;padding:30px 18px}
+.endcard h1{font-size:2.6rem;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+/* ============ GAME DATA ============ */
+const SCHOOLS={
+  ember:{name:'Apoy',color:'#d9583b',passive:'Armies strike 10% harder.',blurb:'The way of fire, born in the heart of the volcano. Burns villages and armies alike.'},
+  tide:{name:'Dagat',color:'#3f93c4',passive:'20% more mana.',blurb:'The way of the sea. Rich in mana and best at breaking a rival’s rite.'},
+  verdant:{name:'Gubat',color:'#5f9f45',passive:'15% more room for people.',blurb:'The way of the forest and the balete tree. Big populations, living walls.'},
+  gloam:{name:'Dilim',color:'#9273c2',passive:'Units cost 25% less upkeep.',blurb:'The way of night and the aswang. Cheap undead hosts and curses.'},
+  dawn:{name:'Liwanag',color:'#d8b84a',passive:'Shrugs off 20% of hostile spells.',blurb:'The way of light, blessed by Bathala. Holy guardians and strong wards.'}
+};
+const SKEYS=Object.keys(SCHOOLS);
+const BUILDINGS=[
+  {k:'farm',name:'Palayan',cost:40,desc:'Rice fields. Room for 25 more people.'},
+  {k:'market',name:'Palengke',cost:60,desc:'Market. +12 gold each turn.'},
+  {k:'well',name:'Dambana',cost:70,desc:'Shrine to the anito. +9 mana each turn.'},
+  {k:'library',name:'Bahay ng Matatanda',cost:80,desc:'Elders’ hall. A little research every turn, +2 more each time you study.'},
+  {k:'bastion',name:'Kuta',cost:110,desc:'Stone fort. +35 defense for your barangay.'}
+];
+const U=(name,school,tier,atk,def,gold,mana,upG,upM,lore)=>({name,school,tier,atk,def,gold,mana,upG,upM,lore});
+const UNITS={
+  levy:U('Mandirigma',null,1,2,3,25,0,.4,0,'Village warriors with kampilan and shield.'),
+  archer:U('Mamamana',null,1,4,3,55,0,.8,0,'Hunters turned archers.'),
+  imp:U('Santelmo','ember',1,6,2,0,45,0,.6,'A wandering ball of ghost-fire.'),
+  hound:U('Sigbin','ember',2,14,9,0,150,0,1.6,'A shadow beast that walks backwards, head between its legs.'),
+  wyrm:U('Minokawa','ember',3,46,30,0,620,0,5,'The giant bird that once tried to swallow the moon.'),
+  sprite:U('Siyokoy','tide',1,4,6,0,45,0,.6,'Scaled mermen of the reefs.'),
+  djinn:U('Magindara','tide',2,11,15,0,150,0,1.6,'Fierce sea-maidens of Bicol.'),
+  leviathan:U('Berberoka','tide',3,34,48,0,620,0,5,'A swamp giant that drinks the river dry, then drowns its prey.'),
+  thornling:U('Duwende','verdant',1,4,7,0,45,0,.6,'Little folk of the anthills. Tabi-tabi po.'),
+  treant:U('Tikbalang','verdant',2,9,19,0,150,0,1.6,'Horse-headed trickster of the forest paths.'),
+  titan:U('Kapre','verdant',3,30,54,0,620,0,5,'The smoking giant who lives in the balete tree.'),
+  ghoul:U('Amalanhig','gloam',1,5,4,0,35,0,.45,'Restless dead who rise from shallow graves.'),
+  wraith:U('Manananggal','gloam',2,13,10,0,140,0,1.4,'Splits at the waist and hunts on bat wings.'),
+  colossus:U('Bungisngis','gloam',3,40,38,0,600,0,4.6,'A laughing one-eyed giant.'),
+  squire:U('Tagabantay','dawn',1,5,5,0,45,0,.6,'Sworn guardians of the dambana.'),
+  halo:U('Diwata','dawn',2,12,13,0,150,0,1.6,'Spirits of mountain and stream.'),
+  seraph:U('Sarimanok','dawn',3,38,40,0,620,0,5,'The legendary bird of good fortune.')
+};
+const SCHOOL_UNITS={ember:['imp','hound','wyrm'],tide:['sprite','djinn','leviathan'],verdant:['thornling','treant','titan'],gloam:['ghoul','wraith','colossus'],dawn:['squire','halo','seraph']};
+const S=(name,school,tier,cost,type,fx,desc,dur)=>({name,school,tier,cost,type,fx,desc,dur});
+const SPELLS={
+  ward:S('Anting-anting',null,1,70,'ench',{resist:.4},'Charmed amulets block 40% of hostile spells for 25 turns.',25),
+  scry:S('Tawas',null,1,15,'scry',{},'Read melted wax in water to see a rival’s treasury, army and lore.'),
+  kindle:S('Lagablab','ember',1,80,'ench',{atk:.25},'Your warriors burn with fury: attack +25% for 20 turns.',20),
+  firestorm:S('Ulan ng Apoy','ember',2,220,'hex',{pop:.08,units:.05,ritual:6},'Rain fire on a rival: 8% of their people and 5% of their army.'),
+  ashrain:S('Galit ng Bulkan','ember',3,480,'hex',{bld:.06,pop:.1,ritual:6},'Wake the volcano: raze 6% of a rival’s buildings and 10% of their people.'),
+  fortune:S('Biyaya ng Dagat','tide',1,70,'ench',{mana:.35},'Blessing of the sea: mana income +35% for 20 turns.',20),
+  mindfog:S('Ulap ng Limot','tide',2,200,'hex',{mana:.3,ritual:20},'Fog of forgetting: drain 30% of a rival’s mana and set their rite back hard.'),
+  maelstrom:S('Daluyong','tide',3,480,'hex',{units:.1,ritual:6},'A storm surge drowns 10% of a rival’s army.'),
+  bounty:S('Masaganang Ani','verdant',1,80,'ench',{gold:.2,growth:1},'Bountiful harvest: gold +20% and people grow twice as fast for 20 turns.',20),
+  thornwall:S('Pader ng Balete','verdant',2,200,'ench',{def:.35},'Balete roots wall your borders: defense +35% for 20 turns.',20),
+  overgrowth:S('Paglago ng Gubat','verdant',3,500,'self',{land:.05},'The forest swallows new ground: +5% land at once.'),
+  raise:S('Bangon, Amalanhig','gloam',1,70,'self',{ghouls:1},'Raise 10 amalanhig, plus 1 for every 8 land you hold.'),
+  plague:S('Kulam','gloam',2,210,'hex',{pop:.14,ritual:6},'A mangkukulam’s curse sickens a rival: 14% of their people die.'),
+  siphon:S('Sipsip-Kaluluwa','gloam',3,480,'hex',{steal:.2,units:.06,ritual:6},'Steal 20% of a rival’s mana; 6% of their army withers.'),
+  blessing:S('Basbas ni Bathala','dawn',1,80,'ench',{def:.3},'Bathala’s blessing: defense +30% for 20 turns.',20),
+  judgment:S('Kidlat ni Bathala','dawn',2,220,'hex',{units:.08,ritual:6},'Bathala’s lightning strikes 8% of a rival’s army.'),
+  sanctuary:S('Kanlungan ng Anito','dawn',3,520,'ench',{immune:1},'The ancestors shelter you: no hostile spell can touch you for 12 turns.',12)
+};
+const TIER_RP=[0,0,300,1200,3500];
+const RITUAL_COST=1500, CHANNEL_COST=20, CHANNEL_GAIN=2.5;
+const MODES={
+  blitz:{name:'Blitz',rate:3000,cap:120,start:90,note:'A turn every 3 seconds. Play in one sitting.'},
+  steady:{name:'Steady',rate:45000,cap:300,start:90,note:'A turn every 45 seconds, banked while you are away.'}
+};
+const DIFFS={
+  apprentice:{name:'Apprentice',eco:.85,aggr:.55},
+  adept:{name:'Adept',eco:1,aggr:1},
+  archon:{name:'Archon',eco:1.2,aggr:1.5}
+};
+const SEASON=1000, PROTECT=25, FALL_LAND=20;
+const RIVAL_NAMES={
+  ember:['Dayang Alab','Lakan Liyab','Bai Sigaw'],
+  tide:['Datu Alon','Dayang Lumot','Lakan Daluyong'],
+  verdant:['Bai Dahon','Datu Kawayan','Dayang Sampaga'],
+  gloam:['Datu Anino','Dayang Hiwaga','Ka Sitsit ng Dilim'],
+  dawn:['Bai Tala','Lakan Araw','Dayang Bulan']
+};
+
+/* ============ CORE LOGIC ============ */
+let G=null;
+const rnd=Math.random;
+const pick=a=>a[Math.floor(rnd()*a.length)];
+const P=()=>G.player;
+const allW=()=>[G.player,...G.rivals];
+const byId=id=>allW().find(w=>w.id===id);
+
+function newWizard(id,name,school,isPlayer){
+  const t1=SCHOOL_UNITS[school][0];
+  return {id,name,school,isPlayer,ally:false,alive:true,gold:1000,mana:400,pop:600,land:120,
+    b:{farm:10,market:6,well:6,library:3,bastion:2},u:{levy:60,archer:20,[t1]:15},
+    rp:0,tier:1,ench:{},ritual:{active:false,p:0},cd:0,scd:0,persona:pick(['warlord','sage','builder'])};
+}
+function newGame(opts){
+  const p=newWizard('p',opts.name||'Walang Pangalan',opts.school,true);
+  const pool=SKEYS.slice().sort(()=>rnd()-.5);
+  const rivals=pool.map((s,i)=>{const w=newWizard('r'+i,pick(RIVAL_NAMES[s]),s,false);return w;});
+  if(opts.variant==='covenant') rivals[0].ally=true;
+  G={v:1,mode:opts.mode,diff:opts.diff,variant:opts.variant,day:0,bank:MODES[opts.mode].start,lastTick:Date.now(),
+     player:p,rivals,log:[],intel:{},pending:[],over:null};
+  log(`${p.name} returns from Kasamaan, the land of the dead, and takes a ruined barangay. Five rival babaylan have returned too.`,'omen');
+  if(G.variant==='covenant') log(`${rivals[0].name} seals a sandugo, a blood compact, with you. They will never raise arms against you.`,'you');
+}
+function log(t,k='info'){G.log.unshift({d:G.day,t,k}); if(G.log.length>220)G.log.length=220;}
+function hostile(a,b){ if(a===b) return false; if((a.isPlayer&&b.ally)||(b.isPlayer&&a.ally)) return false; return true; }
+const built=w=>Object.values(w.b).reduce((s,n)=>s+n,0);
+const freeLand=w=>Math.max(0,w.land-built(w));
+function mod(w,key){let s=0;for(const k in w.ench){const f=SPELLS[k].fx[key];if(f)s+=f;}return s;}
+const popCap=w=>(w.land*6+w.b.farm*25)*(w.school==='verdant'?1.15:1);
+const goldIncome=w=>(w.pop*.12+w.b.market*12)*(1+mod(w,'gold'));
+const manaIncome=w=>(3+w.b.well*9+w.land*.05)*(1+mod(w,'mana')+(w.school==='tide'?.2:0));
+function upkeep(w){let g=0,m=0;for(const k in w.u){g+=w.u[k]*UNITS[k].upG;m+=w.u[k]*UNITS[k].upM;}const f=w.school==='gloam'?.75:1;return{g:g*f,m:m*f};}
+const exploreCostPer=w=>20+w.land*.5;
+const acresPerTurn=w=>3+Math.floor(w.land/100);
+const buildRate=w=>4+Math.floor(w.land/50);
+const armyRaw=w=>Object.entries(w.u).reduce((s,[k,n])=>s+n*(UNITS[k].atk+UNITS[k].def)/2,0);
+function armyAtk(w,frac=1){let s=0;for(const k in w.u)s+=w.u[k]*UNITS[k].atk;return s*frac*(1+mod(w,'atk')+(w.school==='ember'?.1:0));}
+function armyDef(w){let s=0;for(const k in w.u)s+=w.u[k]*UNITS[k].def;return s*(1+mod(w,'def'))+w.b.bastion*35+w.land*.5;}
+const power=w=>w.alive?Math.round(w.land*8+armyRaw(w)*.6+built(w)*4):0;
+const resist=w=>w.ench.sanctuary?1:Math.min(.8,mod(w,'resist')+(w.school==='dawn'?.2:0));
+const hexCost=(w,k)=>Math.round(SPELLS[k].cost*(SPELLS[k].type==='hex'?1+w.land/600:1));
+const unitUnlocked=(w,k)=>{const u=UNITS[k];return (u.school===null||u.school===w.school)&&w.tier>=u.tier;};
+const spellKnown=(w,k)=>{const s=SPELLS[k];return (s.school===null||s.school===w.school)&&w.tier>=s.tier;};
+
+function tick(w){
+  if(!w.alive) return null;
+  const eco=w.isPlayer?1:DIFFS[G.diff].eco;
+  const cap=popCap(w);
+  if(w.pop<cap) w.pop+=(cap-w.pop)*.05*(1+mod(w,'growth')); else w.pop-=(w.pop-cap)*.1;
+  w.gold+=goldIncome(w)*eco;
+  w.mana+=manaIncome(w)*eco;
+  w.rp+=w.b.library*.3;
+  const up=upkeep(w); w.gold-=up.g; w.mana-=up.m;
+  for(const k of ['gold','mana','pop','rp'])if(!isFinite(w[k]))w[k]=0;
+  for(const k in w.u)if(!isFinite(w.u[k])||w.u[k]<0)w.u[k]=0;
+  let flag=null;
+  if(w.gold<0){for(const k in w.u)if(UNITS[k].upG>0)w.u[k]-=Math.ceil(w.u[k]*.03);w.gold=0;flag='gold';}
+  if(w.mana<0){for(const k in w.u)if(UNITS[k].upM>0)w.u[k]-=Math.ceil(w.u[k]*.03);w.mana=0;flag=flag?'both':'mana';}
+  for(const k in w.ench){if(--w.ench[k]<=0){delete w.ench[k]; if(w.isPlayer) log(`${SPELLS[k].name} fades from your barangay.`,'magic');}}
+  updateTier(w);
+  return flag;
+}
+function updateTier(w){
+  while(w.tier<4&&w.rp>=TIER_RP[w.tier+1]){
+    w.tier++;
+    if(w.isPlayer) log(w.tier===4?'The elders have taught you all the old lore. You can now call the Bakunawa.':`The elders reveal circle ${w.tier} rites and creatures.`,'you');
+    else if(w.tier===4) log(`Whispers say ${w.name} has learned the final lore.`,'omen');
+  }
+}
+/* shared activities, return false when they can't be done */
+function explore(w){const per=exploreCostPer(w);let a=acresPerTurn(w);if(w.gold<per*a)a=Math.floor(w.gold/per);if(a<=0)return false;w.gold-=a*per;w.land+=a;return a;}
+function earn(w){const g=w.pop*.15;w.gold+=g;return g;}
+function meditate(w){const m=12+w.b.well*6;w.mana+=m;return m;}
+function study(w){const r=10+w.b.library*2;w.rp+=r;updateTier(w);return r;}
+function channel(w){
+  if(w.mana<CHANNEL_COST) return false;
+  w.mana-=CHANNEL_COST; w.ritual.p=Math.min(100,w.ritual.p+CHANNEL_GAIN); return true;
+}
+function beginRitual(w){
+  if(w.tier<4||w.mana<RITUAL_COST||w.ritual.active) return false;
+  w.mana-=RITUAL_COST; w.ritual={active:true,p:0};
+  log(w.isPlayer?'You begin the chant. Far out at sea, the Bakunawa stirs, and every rival feels it.':`The sea churns: ${w.name} is calling the Bakunawa to swallow the moon. Stop them before it rises.`,'omen');
+  if(!w.isPlayer) G.pending.push({t:`${w.name} is calling the Bakunawa. Attack them or curse them to set the rite back, like banging pots to make the serpent spit out the moon.`,k:'omen'});
+  return true;
+}
+function loseUnits(w,p){let t=0;for(const k in w.u){const n=Math.round(w.u[k]*p);w.u[k]-=n;t+=n;}return t;}
+function doBattle(a,d,frac){
+  const A=armyAtk(a,frac)*(.85+rnd()*.3), D=armyDef(d)*(.9+rnd()*.2);
+  const r={a:a.name,d:d.name,A:Math.round(A),D:Math.round(D),win:A>D,land:0,aL:0,dL:0};
+  if(r.win){
+    const ratio=A/Math.max(1,D), pct=Math.min(.15,.06+.03*(ratio-1));
+    const taken=Math.min(d.land,Math.max(3,Math.floor(d.land*pct))), lp=taken/d.land;
+    for(const k in d.b) d.b[k]=Math.max(0,d.b[k]-Math.round(d.b[k]*lp));
+    d.land-=taken; a.land+=taken; d.pop*=(1-lp); r.land=taken;
+    r.aL=loseUnits(a,frac*.07/Math.min(ratio,2)); r.dL=loseUnits(d,.06*Math.min(ratio,2));
+    if(d.ritual.active){d.ritual.p=Math.max(0,d.ritual.p-15);r.ritual=true;}
+  }else{
+    r.aL=loseUnits(a,frac*.15); r.dL=loseUnits(d,.04);
+  }
+  if(!a.isPlayer){
+    log(r.win?`${a.name} overran ${d.isPlayer?'your':d.name+'’s'} borders and seized ${r.land} land.`:`${a.name} broke against ${d.isPlayer?'your':d.name+'’s'} defenses.`,'war');
+    if(d.isPlayer) G.pending.push({t:r.win?`${a.name} attacked you and seized ${r.land} land. You lost ${r.dL} units.`:`${a.name} attacked and was repelled. They lost ${r.aL} units; you lost ${r.dL}.`,k:'war'});
+  }
+  return r;
+}
+function castHex(c,t,k){
+  const sp=SPELLS[k], cost=hexCost(c,k);
+  c.mana-=cost;
+  const ok=rnd()<.85*(1-resist(t));
+  const r={ok,name:sp.name,t:t.name,fx:[]};
+  if(ok){
+    const f=sp.fx;
+    if(f.pop){const n=Math.round(t.pop*f.pop);t.pop-=n;r.fx.push(`${n} people perished`);}
+    if(f.units){const n=loseUnits(t,f.units);r.fx.push(`${n} units destroyed`);}
+    if(f.bld){let n=0;for(const b in t.b){const x=Math.round(t.b[b]*f.bld);t.b[b]-=x;n+=x;}r.fx.push(`${n} buildings razed`);}
+    if(f.mana){const n=Math.round(t.mana*f.mana);t.mana-=n;r.fx.push(`${n} mana drained`);}
+    if(f.steal){const n=Math.round(t.mana*f.steal);t.mana-=n;c.mana+=n;r.fx.push(`${n} mana stolen`);}
+    if(f.ritual&&t.ritual.active){t.ritual.p=Math.max(0,t.ritual.p-f.ritual);r.fx.push('their ritual was set back');}
+  }
+  if(!c.isPlayer){
+    log(ok?`${c.name} cast ${sp.name} on ${t.isPlayer?'you':t.name}.`:`${t.isPlayer?'Your':t.name+'’s'} wards turned aside ${c.name}’s ${sp.name}.`,'magic');
+    if(t.isPlayer) G.pending.push({t:ok?`${c.name} cast ${sp.name} on you: ${r.fx.join(', ')||'no effect'}.`:`Your wards turned aside ${c.name}’s ${sp.name}.`,k:'magic'});
+  }
+  return r;
+}
+function castSelf(w,k){
+  const sp=SPELLS[k]; w.mana-=sp.cost;
+  if(sp.type==='ench'){w.ench[k]=sp.dur;return `${sp.name} now guards your barangay for ${sp.dur} turns.`;}
+  if(sp.fx.land){const n=Math.max(3,Math.round(w.land*sp.fx.land));w.land+=n;return `The forest spreads: +${n} land.`;}
+  if(sp.fx.ghouls){const n=10+Math.floor(w.land/8);w.u.ghoul=(w.u.ghoul||0)+n;return `${n} ghouls claw their way up to serve you.`;}
+  return '';
+}
+function bestUnit(w){const l=SCHOOL_UNITS[w.school];for(let i=2;i>=0;i--)if(unitUnlocked(w,l[i]))return l[i];return null;}
+function bestHex(w){const l=Object.keys(SPELLS).filter(k=>SPELLS[k].type==='hex'&&spellKnown(w,k));return l.length?l[l.length-1]:null;}
+
+/* AI */
+const PERSONA_W={builder:{farm:3,market:3,well:2,library:2,bastion:1},warlord:{farm:2,market:3,well:2,library:1,bastion:2},sage:{farm:2,market:2,well:3,library:3,bastion:1}};
+function aiBuild(a){
+  const W=PERSONA_W[a.persona],keys=Object.keys(W),tot=keys.reduce((s,k)=>s+W[k],0);
+  let n=Math.min(buildRate(a),freeLand(a));
+  while(n-->0){
+    let r=rnd()*tot,k=keys[0];for(const x of keys){r-=W[x];if(r<=0){k=x;break;}}
+    const c=BUILDINGS.find(b=>b.k===k).cost; if(a.gold<c)break; a.gold-=c; a.b[k]++;
+  }
+}
+function aiTurn(a){
+  if(!a.alive) return;
+  if(a.cd>0)a.cd--; if(a.scd>0)a.scd--;
+  aiAct(a,DIFFS[G.diff]);
+  tick(a);
+}
+function aiAct(a,D){
+  if(a.ritual.active){ if(!channel(a)) meditate(a); return; }
+  const hostiles=allW().filter(t=>t.alive&&hostile(a,t));
+  const caster=hostiles.find(t=>t.ritual.active);
+  if(caster&&rnd()<.6){
+    if(a.cd===0&&G.day>=PROTECT&&armyAtk(a,.8)>armyDef(caster)*.75){doBattle(a,caster,.8);a.cd=Math.round(8/D.aggr);return;}
+    const hx=bestHex(a); if(hx&&a.scd===0&&a.mana>=hexCost(a,hx)){castHex(a,caster,hx);a.scd=6;return;}
+  }
+  if(a.tier>=4&&a.mana>=RITUAL_COST&&G.day>=200&&!allW().some(w=>w.ritual.active)&&rnd()<.04*D.aggr){beginRitual(a);return;}
+  if(a.cd===0&&G.day>=PROTECT&&rnd()<.12*D.aggr){
+    const myA=armyAtk(a,.8), tg=hostiles.filter(t=>armyDef(t)*1.05<myA);
+    if(tg.length){
+      tg.sort((x,y)=>armyDef(x)-armyDef(y));
+      const t=(tg.includes(G.player)&&rnd()<.45)?G.player:tg[0];
+      doBattle(a,t,.8); a.cd=Math.round(16/D.aggr); return;
+    }
+  }
+  if(a.tier>=2&&a.scd===0&&rnd()<.05*D.aggr){
+    const hx=bestHex(a),t=pick(hostiles);
+    if(hx&&t&&a.mana>=hexCost(a,hx)*1.5){castHex(a,t,hx);a.scd=Math.round(20/D.aggr);return;}
+  }
+  if(rnd()<.04){
+    const own=Object.keys(SPELLS).find(k=>SPELLS[k].school===a.school&&SPELLS[k].tier===1);
+    if(own&&!a.ench[own]&&a.mana>=SPELLS[own].cost*2){castSelf(a,own);return;}
+  }
+  if(a.gold>4000&&rnd()<.4){const q=Math.floor(a.gold*.5/55);a.gold-=q*55;a.u.archer+=q;return;}
+  if(a.mana>4000&&rnd()<.4){const u=bestUnit(a),keep=(a.tier>=4&&a.persona!=='warlord')?RITUAL_COST+400:0;const q=Math.floor((a.mana-keep)*.5/UNITS[u].mana);if(q>0){a.mana-=q*UNITS[u].mana;a.u[u]=(a.u[u]||0)+q;return;}}
+  if(freeLand(a)>0&&a.gold>=150){aiBuild(a);return;}
+  if(a.gold>exploreCostPer(a)*acresPerTurn(a)*1.3&&rnd()<.7){explore(a);return;}
+  const saving=a.tier>=4&&a.persona!=='warlord';
+  const u=bestUnit(a);
+  if(u&&a.mana>300&&a.mana>UNITS[u].mana*4&&(!saving||a.mana>RITUAL_COST+400)&&rnd()<.5){
+    const q=Math.floor(a.mana*.55/UNITS[u].mana);a.mana-=q*UNITS[u].mana;a.u[u]=(a.u[u]||0)+q;return;
+  }
+  if(a.gold>900&&rnd()<.6){const q=Math.floor(a.gold*.4/55);a.gold-=q*55;a.u.archer+=q;return;}
+  if(a.tier<4&&rnd()<(a.persona==='sage'?.7:.45)){study(a);return;}
+  if(a.mana<400) meditate(a); else earn(a);
+}
+
+/* world resolution */
+function resolveState(){
+  for(const w of allW()){
+    if(w.alive&&w.land<FALL_LAND){
+      w.alive=false; w.ritual={active:false,p:0};
+      log(w.isPlayer?'Your barangay falls. Your spirit is dragged back to Kasamaan.':`${w.name} has fallen. Their barangay lies in ruins.`,'fall');
+      if(!w.isPlayer) G.pending.push({t:`${w.name} has fallen.`,k:'fall'});
+    }
+  }
+  if(!P().alive){G.over={win:false,why:'Your barangay was conquered.'};return;}
+  for(const w of allW()){
+    if(w.alive&&w.ritual.active&&w.ritual.p>=100){
+      const friendly=w.isPlayer||w.ally;
+      G.over={win:friendly,why:w.isPlayer?'The Bakunawa rises and swallows the last moon. In the new darkness, the islands answer only to you.':w.ally?`Your sandugo ally ${w.name} called the Bakunawa. You share the new age.`:`${w.name} called the Bakunawa. It swallowed the last moon, and the islands fell into their darkness.`};
+      return;
+    }
+  }
+  if(G.rivals.filter(r=>r.alive&&hostile(P(),r)).length===0){G.over={win:true,why:'Every rival babaylan has fallen. The islands are yours.'};return;}
+  if(G.day>=SEASON){
+    const rank=allW().filter(w=>w.alive).sort((x,y)=>power(y)-power(x));
+    const top=rank[0];
+    G.over={win:top.isPlayer||top.ally,why:top.isPlayer?'The season ends with your barangay the mightiest.':top.ally?`The season ends with your ally ${top.name} on top.`:`The season ends. ${top.name} rules as the mightiest babaylan.`};
+  }
+}
+function runTurns(n,perTurn){
+  let used=0,flag=null;
+  for(let i=0;i<n&&!G.over;i++){
+    if(perTurn&&perTurn(i)===false)break;
+    const f=tick(P()); if(f)flag=f;
+    for(const a of G.rivals) aiTurn(a);
+    G.day++; G.bank--; used++;
+    resolveState();
+  }
+  if(flag) log(flag==='gold'?'Your treasury ran dry and soldiers deserted.':flag==='mana'?'Your mana ran dry and summoned creatures slipped away.':'Gold and mana both ran dry. Part of your army abandoned you.','you');
+  return used;
+}
+
+/* ============ UI ============ */
+const UI={tab:'realm',count:5,bq:{},rq:{},setup:{name:'',school:'ember',mode:'blitz',diff:'adept',variant:'solo'}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>{n=Math.floor(n);return n>=100000?(n/1000).toFixed(0)+'k':n>=10000?(n/1000).toFixed(1)+'k':n.toLocaleString('en-US');};
+const sg=n=>(n<0?'−':'+')+fmt(Math.abs(n));
+const SAVE='babaylan-save-v1';
+function save(){try{localStorage.setItem(SAVE,JSON.stringify(G));}catch(e){}}
+function load(){try{const s=localStorage.getItem(SAVE);if(s){const g=JSON.parse(s);if(g&&g.v===1)return g;}}catch(e){}return null;}
+function wipe(){try{localStorage.removeItem(SAVE);}catch(e){}}
+
+function toast(t){const o=$('.toast');if(o)o.remove();const d=document.createElement('div');d.className='toast';d.setAttribute('role','status');d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600);}
+function modal(title,html,buttons=[{t:'Close'}]){
+  closeModal();
+  const s=document.createElement('div');s.className='scrim';s.id='scrim';
+  s.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}"><h2>${esc(title)}</h2>${html}<div class="btns">${buttons.map((b,i)=>`<button class="btn ${b.cls||''}" data-mb="${i}">${esc(b.t)}</button>`).join('')}</div></div>`;
+  s.addEventListener('click',e=>{if(e.target===s)closeModal();const i=e.target.closest('[data-mb]');if(i){const b=buttons[+i.dataset.mb];closeModal();if(b.fn)b.fn();}});
+  document.body.appendChild(s);
+  const f=s.querySelector('[data-mb]');if(f)f.focus();
+}
+function closeModal(){const s=$('#scrim');if(s)s.remove();}
+
+function setSchoolColor(){document.documentElement.style.setProperty('--school',SCHOOLS[G?P().school:UI.setup.school].color);}
+
+/* sigil */
+function arc(cx,cy,r,a0,a1){const p=a=>[cx+r*Math.cos((a-90)*Math.PI/180),cy+r*Math.sin((a-90)*Math.PI/180)];const[s,t]=[p(a0),p(a1)];return `M${s[0].toFixed(1)} ${s[1].toFixed(1)} A${r} ${r} 0 ${a1-a0>180?1:0} 1 ${t[0].toFixed(1)} ${t[1].toFixed(1)}`;}
+const GLYPH={
+  ember:'<path d="M120 88 L146 138 L94 138 Z M120 106 L132 130 L108 130 Z" fill-rule="evenodd"/>',
+  tide:'<path d="M90 108 q15 -14 30 0 t30 0 M90 124 q15 -14 30 0 t30 0 M90 140 q15 -14 30 0 t30 0" fill="none" stroke-width="5" stroke-linecap="round"/>',
+  verdant:'<path d="M120 86 C152 104 152 138 120 156 C88 138 88 104 120 86 Z"/><path d="M120 96 V150" stroke-width="3" stroke="var(--surface)"/>',
+  gloam:'<path d="M132 92 A30 30 0 1 0 132 148 A24 24 0 1 1 132 92 Z"/>',
+  dawn:'<circle cx="120" cy="120" r="14"/><g stroke-width="4" stroke-linecap="round">'+[0,45,90,135,180,225,270,315].map(a=>{const c=Math.cos(a*Math.PI/180),s=Math.sin(a*Math.PI/180);return `<line x1="${(120+c*22).toFixed(1)}" y1="${(120+s*22).toFixed(1)}" x2="${(120+c*34).toFixed(1)}" y2="${(120+s*34).toFixed(1)}"/>`}).join('')+'</g>'
+};
+function sigilSVG(w){
+  const sc=SCHOOLS[w.school].color;
+  const outer=SKEYS.map((k,i)=>`<path d="${arc(120,120,108,i*72+4,i*72+68)}" stroke="${SCHOOLS[k].color}" stroke-width="7" fill="none" opacity="${k===w.school?1:.22}" stroke-linecap="round"/>`).join('');
+  const gone=w.ritual.active?Math.floor(w.ritual.p/100*7):0;
+  const moons=[0,1,2,3,4,5,6].map(i=>{const t=(i*360/7-90)*Math.PI/180,x=(120+93*Math.cos(t)).toFixed(1),y=(120+93*Math.sin(t)).toFixed(1);return i<gone?`<circle cx="${x}" cy="${y}" r="5.5" fill="none" stroke="var(--line)" stroke-width="1.5"/>`:`<circle cx="${x}" cy="${y}" r="5.5" fill="var(--ink)" opacity=".85"/>`;}).join('');
+  const tiers=[0,1,2,3].map(i=>`<path d="${arc(120,120,80,i*90+6,i*90+84)}" stroke="${w.tier>i?'var(--gold)':'var(--line)'}" stroke-width="5" fill="none"/>`).join('');
+  const rp=w.ritual.active?w.ritual.p:0, C=2*Math.PI*64;
+  return `<svg class="sigil" viewBox="0 0 240 240" role="img" aria-label="Your sigil and the seven moons: circle ${w.tier} of 4${w.ritual.active?`, ritual ${Math.floor(rp)}% complete`:''}">
+  <g class="spin">${outer}</g>${moons}
+  ${tiers}
+  <circle cx="120" cy="120" r="64" stroke="var(--line)" stroke-width="2" fill="none"/>
+  ${rp>0?'':'<!--'}<circle cx="120" cy="120" r="64" stroke="${sc}" stroke-width="6" fill="none" stroke-dasharray="${(C*rp/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 120 120)" stroke-linecap="round"/>${rp>0?'':'-->'}
+  <g fill="${sc}" stroke="${sc}">${GLYPH[w.school]}</g></svg>`;
+}
+
+/* top-level render */
+function render(){
+  setSchoolColor();
+  const app=$('#app');
+  if(!G){app.innerHTML=renderSetup();bindSetup();return;}
+  if(G.over){const t=$('.toast');if(t)t.remove();app.innerHTML=renderEnd();$('#again').onclick=()=>{wipe();G=null;render();};return;}
+  const p=P();
+  app.innerHTML=`
+  <header class="top">
+    <div class="top-row">
+      <span class="crest" aria-hidden="true"></span>
+      <div class="who"><h1>${esc(p.name)}</h1><small>${SCHOOLS[p.school].name} babaylan · Day ${G.day}/${SEASON}</small></div>
+      <div class="bank" aria-live="polite"><b id="bankN">${G.bank}</b><small id="bankT">turns</small></div>
+      <button class="iconbtn" id="menuBtn" aria-label="Menu">☰</button>
+    </div>
+    <div class="res">
+      <div><span>Gold</span>${fmt(p.gold)}</div>
+      <div><span>Mana</span>${fmt(p.mana)}</div>
+      <div><span>Land</span>${fmt(p.land)}</div>
+      <div><span>People</span>${fmt(p.pop)}</div>
+      <div><span>Power</span>${fmt(power(p))}</div>
+    </div>
+  </header>
+  <main id="main">${({realm:renderRealm,build:renderBuild,legion:renderLegion,magic:renderMagic,war:renderWar,log:renderLog})[UI.tab]()}</main>
+  <nav class="tabs" role="tablist">${[['realm','Barangay','⌂'],['build','Build','▦'],['legion','Army','⚔'],['magic','Rites','✶'],['war','Rivals','⚑'],['log','Chronicle','☰']].map(([k,l,i])=>`<button role="tab" aria-selected="${UI.tab===k}" data-tab="${k}"><i aria-hidden="true">${i}</i>${l}</button>`).join('')}</nav>`;
+  bindGame();
+  updateBank();
+}
+
+function renderSetup(){
+  const s=UI.setup;
+  const seg=(key,opts)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button data-seg="${key}" data-v="${v}" aria-pressed="${s[key]===v}">${l}</button>`).join('')}</div>`;
+  return `<div class="setup">
+    <div class="title"><h1>Babaylan</h1><div class="baybayin" lang="tl" aria-hidden="true">ᜊᜊᜌ᜔ᜎᜈ᜔</div><p>Slain by rivals and cast into Kasamaan, you have clawed your way back to the islands. Rebuild your barangay, call the creatures of the old tales, and wake the Bakunawa to swallow the moon before a rival does.</p></div>
+    <div class="field"><label for="wname">Your babaylan’s name</label><input type="text" id="wname" maxlength="28" placeholder="e.g. Dayang Malaya" value="${esc(s.name)}"></div>
+    <div class="field"><span class="lbl">Way of magic</span><div class="schools">${SKEYS.map(k=>`<button class="sch-opt" style="--c:${SCHOOLS[k].color}" data-school="${k}" aria-pressed="${s.school===k}"><i></i><b>${SCHOOLS[k].name}</b><span>${SCHOOLS[k].blurb} ${SCHOOLS[k].passive}</span></button>`).join('')}</div></div>
+    <div class="field"><span class="lbl">Turn pace</span>${seg('mode',[['blitz','Blitz'],['steady','Steady']])}<div class="seg-note">${MODES[s.mode].note}</div></div>
+    <div class="field"><span class="lbl">Rivals</span>${seg('diff',[['apprentice','Apprentice'],['adept','Adept'],['archon','Archon']])}<div class="seg-note">${s.diff==='apprentice'?'Slower, gentler rivals.':s.diff==='adept'?'A fair fight.':'Rich, ruthless rivals who attack often.'}</div></div>
+    <div class="field"><span class="lbl">Variant</span>${seg('variant',[['solo','Solo'],['covenant','Sandugo']])}<div class="seg-note">${s.variant==='solo'?'Every babaylan for themself.':'One rival seals a blood compact with you. Win together.'}</div></div>
+    <button class="btn sch" id="startBtn" style="width:100%;padding:13px;font-size:1.05rem;margin-top:8px">Return to the islands</button>
+  </div>`;
+}
+function bindSetup(){
+  $('#wname').addEventListener('input',e=>UI.setup.name=e.target.value);
+  document.querySelectorAll('[data-school]').forEach(b=>b.onclick=()=>{UI.setup.school=b.dataset.school;render();});
+  document.querySelectorAll('[data-seg]').forEach(b=>b.onclick=()=>{UI.setup[b.dataset.seg]=b.dataset.v;render();});
+  $('#startBtn').onclick=()=>{newGame({...UI.setup,name:UI.setup.name.trim()});save();UI.tab='realm';render();
+    modal('Your first days',`<p>You have ${G.bank} turns banked; more arrive over time. Every action spends turns, and your rivals act on each turn you spend.</p><p>No one can attack anyone for the first ${PROTECT} days. Build on your free land, explore for more, and study to unlock stronger magic.</p><p>Win by toppling every rival, or by calling the Bakunawa to swallow the moon.</p>`,[{t:'To work',cls:'sch'}]);};
+}
+function renderEnd(){
+  return `<div class="endcard setup"><h1>${G.over.win?'Victory':'Defeat'}</h1><p>${esc(G.over.why)}</p>
+  <p style="color:var(--dim)">Day ${G.day}. Final power ${fmt(power(P()))}.</p>
+  <div class="rows" style="text-align:left;margin:18px 0">${allW().sort((a,b)=>power(b)-power(a)).map(w=>`<div class="row" style="--tint:${SCHOOLS[w.school].color}"><div><h3>${esc(w.name)}${w.isPlayer?' <span class="tag">you</span>':''}${!w.alive?' <span class="tag">fallen</span>':''}</h3><div class="meta">${SCHOOLS[w.school].name} · ${fmt(w.land)} land</div></div><div class="side count">${fmt(power(w))}</div></div>`).join('')}</div>
+  <button class="btn sch" id="again">Rise again</button></div>`;
+}
+
+/* REALM */
+function renderRealm(){
+  const p=P(),n=UI.count;
+  const cost=Math.round(exploreCostPer(p)*acresPerTurn(p));
+  const tierNext=p.tier<4?TIER_RP[p.tier+1]:null;
+  const enemyRit=G.rivals.find(r=>r.alive&&r.ritual.active&&hostile(p,r));
+  return `${enemyRit?`<div class="ritual" style="--school:${SCHOOLS[enemyRit.school].color}"><h3>${esc(enemyRit.name)} is calling the Bakunawa</h3><div class="meter"><i style="width:${enemyRit.ritual.p}%"></i></div><div class="note">${Math.floor(enemyRit.ritual.p)}% risen. Attack them or curse them from the Rivals tab.</div></div>`:''}
+  <div class="sigil-wrap">${sigilSVG(p)}</div>
+  <div class="realm-line">Circle <b>${p.tier}</b> of 4 · ${tierNext?`research <b>${Math.floor(p.rp)}</b> / ${tierNext}`:'research complete'} · income <b>${sg(goldIncome(p)-upkeep(p).g)}</b> gold, <b>${sg(manaIncome(p)-upkeep(p).m)}</b> mana</div>
+  <div class="sect"><h2>Spend turns</h2><small>Rivals act on every turn you spend</small></div>
+  <div class="chips" role="group" aria-label="Turns to spend">${[1,5,10,25].map(c=>`<button class="chip" data-count="${c}" aria-pressed="${n===c}">${c} turn${c>1?'s':''}</button>`).join('')}</div>
+  <div class="acts">
+    <button class="act" data-do="explore"><b>Explore</b><span>+${acresPerTurn(p)} land a turn for ${fmt(cost)} gold</span></button>
+    <button class="act" data-do="earn"><b>Collect tribute</b><span>+${fmt(p.pop*.15)} extra gold a turn</span></button>
+    <button class="act" data-do="meditate"><b>Meditate</b><span>+${fmt(12+p.b.well*6)} extra mana a turn</span></button>
+    <button class="act" data-do="study"><b>Study</b><span>+${10+p.b.library*2} research a turn</span></button>
+  </div>
+  <p class="note" style="margin-top:12px">Unbuilt land: <b style="color:var(--ink)">${freeLand(p)}</b> acres, ready for the Build tab. People fill your land and farms over time and pay taxes each turn.</p>`;
+}
+function doActivity(kind){
+  const n=UI.count,p=P();
+  if(G.bank<1)return toast('No turns left. Wait for more to arrive.');
+  const use=Math.min(n,G.bank);
+  let total=0;
+  const used=runTurns(use,()=>{const r=({explore,earn,meditate,study})[kind](p);if(r===false)return false;total+=r;});
+  if(!used) return toast(kind==='explore'?'Not enough gold to explore.':'Nothing happened.');
+  const msg={explore:`Explored ${used} turn${used>1?'s':''}: +${total} land.`,earn:`Taxed for ${used} turn${used>1?'s':''}: +${fmt(total)} extra gold.`,meditate:`Meditated ${used} turn${used>1?'s':''}: +${fmt(total)} extra mana.`,study:`Studied ${used} turn${used>1?'s':''}: +${fmt(total)} research.`}[kind];
+  log(msg,'you'); after(msg);
+}
+
+/* BUILD */
+function renderBuild(){
+  const p=P(),q=UI.bq;
+  const totQ=BUILDINGS.reduce((s,b)=>s+(q[b.k]||0),0), cost=BUILDINGS.reduce((s,b)=>s+(q[b.k]||0)*b.cost,0);
+  const turns=totQ?Math.ceil(totQ/buildRate(p)):0;
+  return `<div class="sect"><h2>Build</h2><small>${freeLand(p)} free land · ${buildRate(p)} per turn</small></div>
+  <p class="note">Each building fills one acre of free land. Explore from the Barangay tab for more room.</p>
+  <div class="rows">${BUILDINGS.map(b=>`<div class="row" style="--tint:var(--gold)">
+    <div><h3>${b.name} <span class="count" style="font-size:1rem;color:var(--dim)">×${p.b[b.k]}</span></h3><div class="meta">${b.desc} <b>${b.cost}</b> gold</div></div>
+    <div class="side"><div class="stepper"><button data-bq="${b.k}" data-d="-1" aria-label="Fewer ${b.name}">−</button><input inputmode="numeric" aria-label="${b.name} to build" data-bqi="${b.k}" value="${q[b.k]||0}"><button data-bq="${b.k}" data-d="1" aria-label="More ${b.name}">+</button></div></div>
+  </div>`).join('')}</div>
+  <div class="bar-foot"><div><b>${totQ}</b> to build · ${fmt(cost)} gold<br><small>${turns} turn${turns===1?'':'s'}</small></div>
+  <div style="display:flex;gap:6px"><button class="btn ghost small" id="bFill">Fill land</button><button class="btn" id="bGo" ${totQ?'':'disabled'}>Build</button></div></div>`;
+}
+function doBuild(){
+  const p=P(),q=UI.bq;
+  const tot=BUILDINGS.reduce((s,b)=>s+(q[b.k]||0),0), cost=BUILDINGS.reduce((s,b)=>s+(q[b.k]||0)*b.cost,0);
+  if(!tot)return;
+  if(tot>freeLand(p))return toast(`You only have ${freeLand(p)} free land.`);
+  if(cost>p.gold)return toast(`That costs ${fmt(cost)} gold. You have ${fmt(p.gold)}.`);
+  const turns=Math.ceil(tot/buildRate(p));
+  if(G.bank<turns)return toast(`That needs ${turns} turns. You have ${G.bank}.`);
+  p.gold-=cost; for(const b of BUILDINGS)p.b[b.k]+=(q[b.k]||0);
+  runTurns(turns);
+  const msg=`Built ${tot} building${tot>1?'s':''} over ${turns} turn${turns>1?'s':''}.`;
+  log(msg,'you'); UI.bq={}; after(msg);
+}
+function fillLand(){
+  const p=P(); let free=freeLand(p), gold=p.gold; UI.bq={};
+  const mix=['farm','market','market','well','library','farm','well','bastion'];
+  let i=0,guard=0;
+  while(free>0&&guard++<2000){const k=mix[i++%mix.length],c=BUILDINGS.find(b=>b.k===k).cost;if(gold<c)break;gold-=c;free--;UI.bq[k]=(UI.bq[k]||0)+1;}
+  render();
+}
+
+/* LEGION */
+function renderLegion(){
+  const p=P(), up=upkeep(p);
+  const keys=['levy','archer',...SCHOOL_UNITS[p.school]];
+  return `<div class="stats"><div><b>${fmt(armyAtk(p))}</b><span>Attack</span></div><div><b>${fmt(armyDef(p))}</b><span>Defense</span></div><div><b>−${fmt(up.g)}<small style="font-size:.7em"> g</small></b><span>−${fmt(up.m)} mana a turn</span></div></div>
+  <div class="sect"><h2>Your army</h2><small>Each order takes 1 turn</small></div>
+  <div class="rows">${keys.map(k=>{const u=UNITS[k],ok=unitUnlocked(p,k),c=p.u[k]||0,cost=u.gold?`${u.gold} gold`:`${u.mana} mana`;
+    return `<div class="row ${ok?'':'locked'}" style="--tint:${u.school?SCHOOLS[u.school].color:'var(--line)'}">
+    <div><h3>${u.name} <span class="count" style="font-size:1rem;color:var(--dim)">×${fmt(c)}</span></h3><div class="meta">Attack <b>${u.atk}</b> · Defense <b>${u.def}</b> · ${cost} · upkeep ${u.upG||u.upM} ${u.gold?'gold':'mana'}</div><div class="lore">${u.lore}</div></div>
+    <div class="side">${ok?`<div class="stepper"><input inputmode="numeric" aria-label="${u.name} to ${u.gold?'recruit':'summon'}" data-rq="${k}" value="${UI.rq[k]||''}" placeholder="0" style="width:58px"></div><button class="btn small" data-hire="${k}">${u.gold?'Recruit':'Summon'}</button>`:`<span class="tag">circle ${u.tier}</span>`}</div></div>`;}).join('')}</div>
+  <p class="note" style="margin-top:12px">Leave the box empty to hire as many as you can afford. If gold or mana runs dry, units desert.</p>`;
+}
+function doHire(k){
+  const p=P(),u=UNITS[k];
+  if(G.bank<1)return toast('No turns left.');
+  const price=u.gold||u.mana, have=u.gold?p.gold:p.mana;
+  let q=parseInt(UI.rq[k],10); const max=Math.floor(have/price);
+  if(!q||q<0)q=max; q=Math.min(q,max);
+  if(q<=0)return toast(`Not enough ${u.gold?'gold':'mana'}.`);
+  if(u.gold)p.gold-=q*price; else p.mana-=q*price;
+  p.u[k]=(p.u[k]||0)+q; UI.rq[k]='';
+  runTurns(1);
+  const msg=`${u.gold?'Recruited':'Summoned'} ${q} ${u.name}${q>1?'s':''}.`;log(msg,'you');after(msg);
+}
+
+/* MAGIC */
+function renderMagic(){
+  const p=P(), next=p.tier<4?TIER_RP[p.tier+1]:null, prev=TIER_RP[p.tier]||0;
+  const pct=next?Math.min(100,(p.rp-prev)/(next-prev)*100):100;
+  const keys=Object.keys(SPELLS).filter(k=>SPELLS[k].school===null||SPELLS[k].school===p.school);
+  const ench=Object.entries(p.ench);
+  return `<div class="sect"><h2>Research</h2><small>Circle ${p.tier} of 4</small></div>
+  <div class="meter"><i style="width:${pct}%"></i></div>
+  <p class="note">${next?`${Math.floor(p.rp)} of ${next} research to reach circle ${p.tier+1}. Study from the Barangay tab; elders’ halls speed it up.`:'All four circles mastered. You can call the Bakunawa.'}</p>
+  ${ench.length?`<p class="note">Active: ${ench.map(([k,t])=>`<b style="color:var(--ink)">${SPELLS[k].name}</b> (${t})`).join(', ')}</p>`:''}
+  <div class="sect"><h2>Rites and curses</h2><small>Casting takes 1 turn</small></div>
+  <div class="rows">${keys.map(k=>{const s=SPELLS[k],ok=spellKnown(p,k),c=hexCost(p,k);
+    return `<div class="row ${ok?'':'locked'}" style="--tint:${s.school?SCHOOLS[s.school].color:'var(--line)'}"><div><h3>${s.name}</h3><div class="meta">${s.desc} <b>${c}</b> mana</div></div>
+    <div class="side">${ok?`<button class="btn small ${s.type==='hex'?'warn':''}" data-cast="${k}">${s.type==='hex'||s.type==='scry'?'Target':'Cast'}</button>`:`<span class="tag">circle ${s.tier}</span>`}</div></div>`;}).join('')}</div>
+  <div class="ritual"><h3>Call the Bakunawa</h3>
+   ${p.ritual.active?`<div class="meter"><i style="width:${p.ritual.p}%"></i></div><p class="note">${Math.floor(p.ritual.p)}% risen. Each turn of chanting adds ${CHANNEL_GAIN}% and costs ${CHANNEL_COST} mana. Every successful attack on you sets it back 15%.</p><button class="btn sch" data-channel>Chant ${UI.count} turn${UI.count>1?'s':''}</button>`
+   :`<p class="note">The final rite: wake the moon-eating serpent from the sea. Costs ${RITUAL_COST} mana to begin, then ${Math.ceil(100/CHANNEL_GAIN)} turns of chanting. Every rival will turn on you while you chant.</p><button class="btn sch" data-ritual ${p.tier>=4?'':'disabled'}>${p.tier>=4?'Begin the rite':'Requires circle 4'}</button>`}
+  </div>`;
+}
+function targetPicker(title,onPick,filter=()=>true){
+  const ts=G.rivals.filter(r=>r.alive&&hostile(P(),r)&&filter(r));
+  if(!ts.length)return toast('No valid targets.');
+  modal(title,`<div class="rows">${ts.map(r=>`<div class="row" style="--tint:${SCHOOLS[r.school].color}"><div><h3>${esc(r.name)}${r.ritual.active?' <span class="tag hot">casting</span>':''}</h3><div class="meta">${SCHOOLS[r.school].name} · ${fmt(r.land)} land · power ${fmt(power(r))}</div></div><div class="side"><button class="btn small" data-pickt="${r.id}">Choose</button></div></div>`).join('')}</div>`,[{t:'Cancel',cls:'ghost'}]);
+  document.querySelectorAll('[data-pickt]').forEach(b=>b.onclick=()=>{closeModal();onPick(byId(b.dataset.pickt));});
+}
+function doCast(k){
+  const p=P(),s=SPELLS[k],c=hexCost(p,k);
+  if(G.bank<1)return toast('No turns left.');
+  if(p.mana<c)return toast(`${s.name} needs ${c} mana.`);
+  if(s.type==='scry'){
+    return targetPicker('Read the tawas for whom?',t=>{p.mana-=c;runTurns(1);
+      G.intel[t.id]={d:G.day,gold:Math.round(t.gold),mana:Math.round(t.mana),tier:t.tier,atk:Math.round(armyAtk(t)),def:Math.round(armyDef(t)),units:{...t.u},ench:Object.keys(t.ench),rit:t.ritual.active?t.ritual.p:null};
+      log(`Your tawas reveals ${t.name}’s barangay.`,'magic');UI.tab='war';after(`The wax reveals ${t.name}’s barangay.`);});
+  }
+  if(s.type==='hex'){
+    if(G.day<PROTECT)return toast(`Hostile magic is barred until day ${PROTECT}.`);
+    return targetPicker(`Cast ${s.name} on whom?`,t=>{
+      const r=castHex(p,t,k); runTurns(1);
+      const msg=r.ok?`${s.name} struck ${t.name}: ${r.fx.join(', ')||'little effect'}.`:`${t.name}’s wards turned aside your ${s.name}.`;
+      log(msg,'magic'); after(null); modal(r.ok?'The spell lands':'The spell fails',`<p>${esc(msg)}</p>`);
+    });
+  }
+  const msg=castSelf(p,k); runTurns(1); log(msg,'magic'); after(msg);
+}
+
+/* WAR */
+function renderWar(){
+  const p=P();
+  return `<div class="sect"><h2>Rival babaylan</h2><small>${G.day<PROTECT?`Truce until day ${PROTECT}`:'Attacks take 2 turns'}</small></div>
+  <div class="rows">${G.rivals.slice().sort((a,b)=>power(b)-power(a)).map(r=>{const i=G.intel[r.id];
+   return `<div class="row ${r.alive?'':'locked'}" style="--tint:${SCHOOLS[r.school].color}">
+    <div><h3>${esc(r.name)}${r.ally?' <span class="tag ally">ally</span>':''}${r.ritual.active?' <span class="tag hot">calling Bakunawa</span>':''}${!r.alive?' <span class="tag">fallen</span>':''}</h3>
+    <div class="meta">${SCHOOLS[r.school].name} · <b>${fmt(r.land)}</b> land · power <b>${fmt(power(r))}</b>${r.ritual.active?` · Bakunawa ${Math.floor(r.ritual.p)}% risen`:''}</div>
+    ${i?`<div class="meta">Seen day ${i.d}: ${fmt(i.gold)} gold, ${fmt(i.mana)} mana, circle ${i.tier}, attack ${fmt(i.atk)}, defense ${fmt(i.def)}${i.ench.length?`, guarded by ${i.ench.map(k=>SPELLS[k].name).join(', ')}`:''}</div>`:''}</div>
+    <div class="side">${r.alive&&!r.ally?`<button class="btn small warn" data-attack="${r.id}">Attack</button>`:''}</div></div>`;}).join('')}</div>
+  <p class="note" style="margin-top:12px">Your attack: ${fmt(armyAtk(p))} at full strength. Defense shown after a Tawas is a snapshot; rivals keep building.</p>`;
+}
+function attackDialog(id){
+  const p=P(),t=byId(id);
+  if(G.day<PROTECT)return toast(`The truce holds until day ${PROTECT}.`);
+  if(G.bank<2)return toast('An attack needs 2 turns.');
+  let f=.75;
+  const body=()=>`<p>Send part of your army against ${esc(t.name)}. Units you keep home still defend you.</p>
+   <div class="chips">${[.25,.5,.75,1].map(x=>`<button class="chip" data-frac="${x}" aria-pressed="${f===x}">${x*100}%</button>`).join('')}</div>
+   <p class="note">Strike force attack: <b style="color:var(--ink)" id="fa">${fmt(armyAtk(p,f))}</b>${G.intel[id]?` vs their last seen defense ${fmt(G.intel[id].def)}`:'. Read a Tawas first to see their defense.'}</p>`;
+  modal(`March on ${t.name}`,`<div id="atkBody">${body()}</div>`,[{t:'Cancel',cls:'ghost'},{t:'Attack',cls:'warn',fn:()=>{
+    const r=doBattle(p,t,f); runTurns(2);
+    const msg=r.win?`Victory over ${t.name}: +${r.land} land.`:`Your army broke against ${t.name}’s defenses.`;
+    log(msg,'war'); after(null);
+    modal(r.win?'Victory':'Repelled',`<div class="report"><div><span>Your attack</span>${fmt(r.A)}</div><div><span>Their defense</span>${fmt(r.D)}</div><div><span>Your losses</span>${fmt(r.aL)} units</div><div><span>Their losses</span>${fmt(r.dL)} units</div></div><p>${r.win?`You seized ${r.land} land${r.ritual?' and broke part of their rite':''}.`:'Strengthen your army, cast a war enchantment, or pick a weaker target.'}</p>`);
+  }}]);
+  const wire=()=>document.querySelectorAll('[data-frac]').forEach(b=>b.onclick=()=>{f=+b.dataset.frac;$('#atkBody').innerHTML=body();wire();});
+  wire();
+}
+
+/* LOG */
+function renderLog(){
+  return `<div class="sect"><h2>Chronicle</h2><small>Newest first</small></div><ul class="log">${G.log.map(l=>`<li class="${l.k}"><time>Day ${l.d}</time>${esc(l.t)}</li>`).join('')}</ul>`;
+}
+
+/* bindings & flow */
+function after(msg){
+  save(); render();
+  if(G.over){render();return;}
+  if(G.pending.length){
+    const items=G.pending.splice(0); save();
+    modal('While you worked',`<ul class="log">${items.map(i=>`<li class="${i.k}">${esc(i.t)}</li>`).join('')}</ul>`);
+  }else if(msg) toast(msg);
+}
+function bindGame(){
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{UI.tab=b.dataset.tab;render();$('#main').scrollTop=0;});
+  $('#menuBtn').onclick=menu;
+  document.querySelectorAll('[data-count]').forEach(b=>b.onclick=()=>{UI.count=+b.dataset.count;render();});
+  document.querySelectorAll('[data-do]').forEach(b=>b.onclick=()=>doActivity(b.dataset.do));
+  document.querySelectorAll('[data-bq]').forEach(b=>b.onclick=()=>{const k=b.dataset.bq;UI.bq[k]=Math.max(0,(UI.bq[k]||0)+ +b.dataset.d);render();});
+  document.querySelectorAll('[data-bqi]').forEach(i=>i.onchange=()=>{UI.bq[i.dataset.bqi]=Math.max(0,parseInt(i.value,10)||0);render();});
+  if($('#bGo'))$('#bGo').onclick=doBuild;
+  if($('#bFill'))$('#bFill').onclick=fillLand;
+  document.querySelectorAll('[data-rq]').forEach(i=>i.oninput=()=>UI.rq[i.dataset.rq]=i.value);
+  document.querySelectorAll('[data-hire]').forEach(b=>b.onclick=()=>doHire(b.dataset.hire));
+  document.querySelectorAll('[data-cast]').forEach(b=>b.onclick=()=>doCast(b.dataset.cast));
+  document.querySelectorAll('[data-attack]').forEach(b=>b.onclick=()=>attackDialog(b.dataset.attack));
+  const rb=document.querySelector('[data-ritual]');
+  if(rb)rb.onclick=()=>{const p=P();if(G.bank<1)return toast('No turns left.');if(p.mana<RITUAL_COST)return toast(`You need ${RITUAL_COST} mana to begin.`);
+    modal('Call the Bakunawa?',`<p>This spends ${RITUAL_COST} mana. Every rival will learn of it and turn their armies and spells on you until you finish or fall.</p>`,[{t:'Not yet',cls:'ghost'},{t:'Begin',cls:'sch',fn:()=>{beginRitual(p);runTurns(1);after('The chant has begun.');}}]);};
+  const cb=document.querySelector('[data-channel]');
+  if(cb)cb.onclick=()=>{if(G.bank<1)return toast('No turns left.');const p=P();const used=runTurns(Math.min(UI.count,G.bank),()=>channel(p));
+    if(!used)return toast(`Chanting needs ${CHANNEL_COST} mana a turn.`);log(`You chanted to the Bakunawa for ${used} turn${used>1?'s':''}.`,'omen');after(`The Bakunawa is ${Math.floor(p.ritual.p)}% risen.`);};
+}
+function menu(){
+  modal('Menu',`<p><b>How to play.</b> Turns are your lifeblood: they trickle in over time (${MODES[G.mode].note.toLowerCase()}) and every action spends them. Rivals take one action for every turn you spend.</p>
+  <p>Grow with Explore and Build, fund armies with gold and mana, and Study to reach higher circles of magic. Your sigil fills as you advance: the gold arcs are your lore circles, and the seven moons go dark one by one as the Bakunawa rises.</p>
+  <p>Win by making every hostile rival fall (below ${FALL_LAND} land), by calling the Bakunawa, or by being the mightiest when day ${SEASON} arrives.</p>
+  <p class="note">${MODES[G.mode].name} pace · ${DIFFS[G.diff].name} rivals · ${G.variant==='covenant'?'Sandugo':'Solo'}</p>`,
+  [{t:'Abandon this reign',cls:'warn',fn:()=>modal('Abandon this reign?','<p>Your save will be erased and you start over.</p>',[{t:'Keep playing',cls:'ghost'},{t:'Erase and restart',cls:'warn',fn:()=>{wipe();G=null;render();}}])},{t:'Close'}]);
+}
+function updateBank(){
+  if(!G||G.over)return;
+  const before=G.bank; refreshBank();
+  const n=$('#bankN'),t=$('#bankT'); if(!n)return;
+  n.textContent=G.bank;
+  const m=MODES[G.mode];
+  if(G.bank>=m.cap)t.textContent='turns (full)';
+  else{const s=Math.ceil((m.rate-(Date.now()-G.lastTick))/1000);t.textContent=`turns · +1 in ${s>=60?Math.ceil(s/60)+'m':s+'s'}`;}
+  if(G.bank!==before)save();
+}
+function refreshBank(){
+  const m=MODES[G.mode],now=Date.now();
+  if(G.bank>=m.cap){G.lastTick=now;return;}
+  const n=Math.floor((now-G.lastTick)/m.rate);
+  if(n>0){G.bank=Math.min(m.cap,G.bank+n);G.lastTick+=n*m.rate;if(G.bank>=m.cap)G.lastTick=now;}
+}
+setInterval(updateBank,1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&G&&!G.over){refreshBank();render();}});
+
+G=load(); if(G)refreshBank();
+render();
+</script>
+</body>
+</html>
